@@ -1,0 +1,67 @@
+@page
+@model GPermitter.Pages.Admin.UsersModel
+@{
+    ViewData["Title"] = "User Administration";
+}
+
+<h1>User Administration</h1>
+
+<div class="row">
+    <div class="col-lg-6">
+        <h2>Create User</h2>
+        <form method="post" asp-page-handler="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="mb-3">
+                <label asp-for="CreateInput.Email" class="form-label"></label>
+                <input asp-for="CreateInput.Email" class="form-control" />
+                <span asp-validation-for="CreateInput.Email" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="CreateInput.Password" class="form-label"></label>
+                <input asp-for="CreateInput.Password" class="form-control" />
+                <span asp-validation-for="CreateInput.Password" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="CreateInput.Role" class="form-label"></label>
+                <select asp-for="CreateInput.Role" class="form-select" asp-items="Model.RoleOptions"></select>
+                <span asp-validation-for="CreateInput.Role" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Create User</button>
+        </form>
+    </div>
+</div>
+
+<hr />
+
+<h2>Existing Users</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Roles</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var user in Model.Users)
+    {
+        <tr>
+            <td>@user.Email</td>
+            <td>@string.Join(", ", user.Roles)</td>
+            <td>
+                @if (user.CanDelete)
+                {
+                    <form method="post" asp-page-handler="Delete" class="d-inline">
+                        <input type="hidden" name="userId" value="@user.Id" />
+                        <button class="btn btn-sm btn-danger" type="submit">Delete</button>
+                    </form>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
